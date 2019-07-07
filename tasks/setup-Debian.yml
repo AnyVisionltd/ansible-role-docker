@@ -20,6 +20,7 @@
     state: present
   register: add_repository_key
   ignore_errors: "{{ docker_apt_ignore_key_error }}"
+  when: airgap is defined and airgap == True
 
 - name: Ensure curl is present (on older systems without SNI).
   package: name=curl state=present
@@ -31,10 +32,13 @@
     curl -sSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
   args:
     warn: false
-  when: add_repository_key is failed
+  when: 
+    - add_repository_key is failed
+    - airgap is defined and airgap == True
 
 - name: Add Docker repository.
   apt_repository:
     repo: "{{ docker_apt_repository }}"
     state: present
     update_cache: true
+  when: airgap is defined and airgap == True
