@@ -11,7 +11,7 @@
   rpm_key:
     key: https://download.docker.com/linux/centos/gpg
     state: present
-  when: airgap is defined and airgap == True
+  when: airgap is not defined or airgap != True
 
 - name: Add Docker repository.
   get_url:
@@ -20,7 +20,7 @@
     owner: root
     group: root
     mode: 0644
-  when: airgap is defined and airgap == True
+  when: airgap is not defined or airgap != True
 
 - name: Configure Docker Edge repo.
   ini_file:
